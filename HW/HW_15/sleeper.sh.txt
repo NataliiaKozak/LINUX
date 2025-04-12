@@ -1,0 +1,49 @@
+#!/bin/bash 
+
+logProcesses() {
+    local current_time=$(date +"%H:%M:%S")
+    local process_count=$(ps -ef | wc -l)
+    echo "${current_time} | Процессов: ${process_count}" >> process_info.txt
+}
+
+
+writeCpuInfo() {
+    cat /proc/cpuinfo > cpu_info.txt
+}
+
+
+writeOsName() {
+    local os_name=$(grep "NAME=" /etc/os-release)
+    echo "${os_name}" > os_name.txt
+}
+
+
+writeCleanOsName() {
+    local clean_name=$(grep "NAME=" /etc/os-release | awk -F'=' '{print $2}')
+    echo "${clean_name}" > os_clean_name.txt
+}
+
+
+createFiles() {
+    for num in {50..100}; do
+        touch "${num}.txt"
+    done
+}
+
+
+logProcessesLoop() {
+    for i in {1..10}; do
+        logProcesses
+        sleep 5 # Изменить интервал можно здесь
+    done
+}
+
+
+logProcessesLoop
+writeCpuInfo
+writeOsName
+writeCleanOsName
+createFiles
+
+
+echo "Скрипт выполнен успешно!"
